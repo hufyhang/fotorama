@@ -1271,6 +1271,19 @@ jQuery.Fotorama = function ($fotorama, opts) {
         width = Math.round(width);
         height = measures.h = Math.round(minMaxLimit(height, numberFromWhatever(measures.minheight, windowHeight), numberFromWhatever(measures.maxheight, windowHeight)));
 
+        var tabletMax = opts.tabletto;
+        var tabletMin = opts.tabletfrom || '768px';
+
+        if (typeof tabletMax !== 'undefined') {
+          if (window.matchMedia('(min-width:' + tabletMin + ') and (max-width:' + tabletMax + ')').matches) {
+            var tabletHeight = opts.tabletheight;
+            if (typeof tabletHeight !== 'undefined') {
+              height = parseInt(tabletHeight, 10);
+            }
+
+          }
+        }
+
         $stage
             .stop()
             .animate({width: width, height: height}, time, function () {
