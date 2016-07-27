@@ -343,7 +343,18 @@ function fit ($el, measuresToFit, method, position) {
   var elData = $el.data(),
       measures = elData.measures;
 
-  if (measures && (!elData.l ||
+  var $container = $el.closest('.fotorama-container');
+
+  var tabletMax = $container.data('tablet-to');
+  var tabletMin = $container.data('tablet-from') || '768px';
+  var tabletMode = false;
+  if (typeof tabletMax !== 'undefined' && tabletMax !== '') {
+    if (window.matchMedia('(min-width:' + tabletMin + ') and (max-width:' + tabletMax + ')').matches) {
+      tabletMode = true;
+    }
+  }
+
+  if (tabletMode || measures && (!elData.l ||
       elData.l.W !== measures.width ||
       elData.l.H !== measures.height ||
       elData.l.r !== measures.ratio ||
@@ -352,11 +363,16 @@ function fit ($el, measuresToFit, method, position) {
       elData.l.m !== method ||
       elData.l.p !== position)) {
 
-    console.log('fit');
+    // console.log('fit');
+
+    var h = measuresToFit.h;
+    if (tabletMode) {
+      h = parseInt($container.data('tablet-height'), 10);
+    }
 
     var width = measures.width,
         height = measures.height,
-        ratio = measuresToFit.w / measuresToFit.h,
+        ratio = measuresToFit.w / h,
         biggerRatioFLAG = measures.ratio >= ratio,
         fitFLAG = method === 'scaledown',
         containFLAG = method === 'contain',
@@ -367,15 +383,25 @@ function fit ($el, measuresToFit, method, position) {
       width = minMaxLimit(measuresToFit.w, 0, fitFLAG ? width : Infinity);
       height = width / measures.ratio;
     } else if (biggerRatioFLAG && coverFLAG || !biggerRatioFLAG && (fitFLAG || containFLAG)) {
-      height = minMaxLimit(measuresToFit.h, 0, fitFLAG ? height : Infinity);
+      height = minMaxLimit(h, 0, fitFLAG ? height : Infinity);
       width = height * measures.ratio;
+    }
+
+    if (typeof tabletMax !== 'undefined' && tabletMax !== '') {
+      if (window.matchMedia('(min-width:' + tabletMin + ') and (max-width:' + tabletMax + ')').matches) {
+        var tabletHeight = $container.data('tablet-height');
+        if (typeof tabletHeight !== 'undefined') {
+          height = parseInt(tabletHeight, 10);
+        }
+
+      }
     }
 
     $el.css({
       width: width,
       height: height,
       left: numberFromWhatever(pos.x, measuresToFit.w - width),
-      top: numberFromWhatever(pos.y, measuresToFit.h- height)
+      top: numberFromWhatever(pos.y, h- height)
     });
 
     elData.l = {
@@ -383,7 +409,7 @@ function fit ($el, measuresToFit, method, position) {
       H: measures.height,
       r: measures.ratio,
       w: measuresToFit.w,
-      h: measuresToFit.h,
+      h: h,
       m: method,
       p: position
     };

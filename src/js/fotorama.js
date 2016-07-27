@@ -1274,7 +1274,7 @@ jQuery.Fotorama = function ($fotorama, opts) {
         var tabletMax = opts.tabletto;
         var tabletMin = opts.tabletfrom || '768px';
 
-        if (typeof tabletMax !== 'undefined') {
+        if (typeof tabletMax !== 'undefined' && tabletMax !== '') {
           if (window.matchMedia('(min-width:' + tabletMin + ') and (max-width:' + tabletMax + ')').matches) {
             var tabletHeight = opts.tabletheight;
             if (typeof tabletHeight !== 'undefined') {
