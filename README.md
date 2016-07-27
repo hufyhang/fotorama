@@ -1,3 +1,17 @@
+# Changes to original Fotorama
+
+* Added `alt` attribute support. Lazy-loading is also support. i.e. `<a href="photo.png" alt="This is an image">`
+
+* Added tablet mode to specify Fotorama instances' height on tablets.
+
+Usage:
+
+
+```jade
+.fotorama.fotorama-container(data-tablet-to="1200px", data-tablet-height="100px", data-minheight="100px", data-width="100%")
+```
+
+
 # Fotorama source
 
 There is nothing for non-coders. Take the latest and ready-to-use Fotorama on its website:<br>
