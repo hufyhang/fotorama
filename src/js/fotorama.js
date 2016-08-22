@@ -561,7 +561,7 @@ jQuery.Fotorama = function ($fotorama, opts) {
 
       frameData.state = '';
 
-      if ( frameData.data.hasOwnProperty('alt') ) {
+      if ( frameData != null && frameData.data != null && typeof frameData.data.hasOwnProperty === 'function' && frameData.data.hasOwnProperty('alt') ) {
           img.alt= frameData.data.alt;
       }
       img.src = src;
