@@ -507,6 +507,23 @@ jQuery.Fotorama = function ($fotorama, opts) {
             .prependTo($frame);
 
         fit($img, ($.isFunction(specialMeasures) ? specialMeasures() : specialMeasures) || measures, method || dataFrame.fit || opts.fit, position || dataFrame.position || opts.position);
+        // 对fotorama-container监听fullscreen和show事件，使得在全屏下使用contain作为fit方式，非全屏下使用默认设置。
+        var fitMethod = method || dataFrame.fit || opts.fit;
+
+        $('.fotorama-container').on('fotorama:fullscreenenter fotorama:fullscreenexit', function (evt) {
+          if (evt.type === 'fotorama:fullscreenenter') {
+            fitMethod = 'contain';
+            fit($img, ($.isFunction(specialMeasures) ? specialMeasures() : specialMeasures) || measures, fitMethod, position || dataFrame.position || opts.position);
+          }
+          else {
+            fitMethod = method || dataFrame.fit || opts.fit;
+            fit($img, ($.isFunction(specialMeasures) ? specialMeasures() : specialMeasures) || measures, fitMethod, position || dataFrame.position || opts.position);
+          }
+        });
+
+        $('.fotorama-container').on('fotorama:show fotorama:showend', function (evt) {
+          fit($img, ($.isFunction(specialMeasures) ? specialMeasures() : specialMeasures) || measures, fitMethod, position || dataFrame.position || opts.position);
+        });
 
         $.Fotorama.cache[src] = frameData.state = 'loaded';
 
